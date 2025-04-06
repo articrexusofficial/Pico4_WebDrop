@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="gallery-container">
+        <h1>Image Gallery</h1>
+
+        <div class="nav-links">
+            <a href="{{ url_for('index') }}">Upload Page</a>
+        </div>
+
+        {% if images %}
+            <div class="image-grid">
+                {% for image in images %}
+                    <div class="image-item">
+                        <a href="{{ url_for('uploaded_file', filename=image.stored_filename) }}" target="_blank">
+                            <img src="{{ url_for('uploaded_file', filename=image.stored_filename) }}" alt="{{ image.original_filename }}">
+                        </a>
+                        <p class="timestamp">{{ image.upload_timestamp.strftime('%Y-%m-%d') if image.upload_timestamp else 'N/A' }}</p>
+                        <div class="actions">
+                            <form action="{{ url_for('delete_file', file_id=image.id) }}" method="POST" style="display: inline;">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                            <a href="{{ url_for('uploaded_file', filename=image.stored_filename) }}" download class="download-btn">Download</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-images">No images uploaded yet.</p>
+        {% endif %}
+    </div>
+</body>
+</html>
